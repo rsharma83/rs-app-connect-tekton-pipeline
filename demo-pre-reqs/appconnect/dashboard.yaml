@@ -6,8 +6,8 @@ metadata:
 spec:
   license:
     accept: true
-    license: L-KSBM-CJ2KWU
-    use: CloudPakForIntegrationProduction
+    license: L-LFMR-BTD75V
+    use: CloudPakForIntegrationNonProductionFREE
   pod:
     containers:
       content-server:
@@ -20,9 +20,9 @@ spec:
             cpu: 250m
             memory: 250Mi
   useCommonServices: true
-  version: '12.0'
+  version: '12.0.9.0-r1'
   storage:
-    class: 'ibmc-file-silver-gid'
+    class: 'managed-nfs-storage'
     size: 5Gi
     type: persistent-claim
   replicas: 1

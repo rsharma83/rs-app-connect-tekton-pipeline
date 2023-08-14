@@ -6,9 +6,9 @@ metadata:
 spec:
   license:
     accept: true
-    license: L-RJON-CD3JKX
+    license: L-YBXJ-ADJNSM
   mqDashboard: true
   replicas: 1
   storage:
-    class: ibmc-file-gold-gid
-  version: 2022.2.1
+    class: managed-nfs-storage
+  version: 2023.2.1
