@@ -3,3 +3,7 @@ ibm-entitlement-key.yaml
 *.class
 .DS_Store
 ca.p12
+**/platfform-navigator.yaml
+**/dashboard.yaml
+simple-pipelinerun.yaml
+complex-pipelinerun.yaml

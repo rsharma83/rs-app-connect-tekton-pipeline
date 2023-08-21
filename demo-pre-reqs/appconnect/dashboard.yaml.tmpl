@@ -22,7 +22,7 @@ spec:
   useCommonServices: true
   version: '12.0.9.0-r1'
   storage:
-    class: ocs-storagecluster-cephfs
+    class: ${FILE_STORAGECLASS}
     size: 2Gi
     type: persistent-claim
   replicas: 1

@@ -36,6 +36,62 @@ This pipeline provides almost all parts of your application at runtime when the 
 
 Baking the BAR files into custom App Connect images prevents the need to run a dedicated content server to host BAR files, however if you would prefer to do that see the documentation on [Mechanisms for providing BAR files to an integration server](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=servers-mechanisms-providing-bar-files-integration-server) for more details on how to do this. (The pipeline in this repository uses the approach described as "Custom image" in that documentation.)
 
+### Install tools
+
+1. [git cli](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), if not installed.
+
+2. [oc cli](https://docs.openshift.com/container-platform/4.12/cli_reference/openshift_cli/getting-started-cli.html), if not installed.
+
+3. [tkn cli](https://tekton.dev/docs/cli/), if not installed
+
+4. [jq](https://jqlang.github.io/jq/download/), if not installed
+
+### Fork or clone the repository
+
+1. You can first fork the repository to your Git organisation.
+
+2. Then you clone the repository using the following command
+
+```
+git clone https://github.com/<org>/app-connect-tekton-pipeline
+```
+### Obtain IBM entitlement key
+
+1. Go to the [Container software library](https://myibm.ibm.com/products-services/containerlibrary?_gl=1*m5yt6i*_ga*NTg4MDI2NDM4LjE2OTA2Mzc5NDc.*_ga_FYECCCS21D*MTY5MjU3ODE2OS43Ny4xLjE2OTI1Nzk1MzAuMC4wLjA.).
+
+2. Copy the key - this will be used to create a pull secret later.
+
+### Install prerequisites
+
+If you have a vanilla OpenShift cluster, you will need to install the prerequisites.
+
+For simple pipeline run, you need to install the following:
+
+- Platform Navigator - which automatically installed Cloud Pak for Integration
+- Cloud Pak Operators
+- App Connect Dashboard (optional)
+
+For complex pipeline run, in additiona to the above components, you need to install the following:
+
+- Event Streams
+- Postgres database
+
+We have prepared the scripts to install these components in the folder [`demo-pre-reqs`](./demo-pre-reqs/). The instructions is found in this [`README.md`](./demo-pre-reqs/README.md).
+
+To access the OpenShift cluster via oc cli, you need to login using token by running this command in Terminal.
+
+```
+open https://oauth-openshift.apps.<clusterID>.<domainName>/oauth/token/request
+```
+
+After login, you will be presented a command which you need to run in the terminal
+
+```
+oc login --token=<token> --server=https://api.<clusterID>.<domainName>:6443
+```
+
+Once you have access to the cluster, you can install the prerequisites.
+
 ### Running the pipeline
 
 |  | **link** |
@@ -255,6 +311,18 @@ If your Git repository is publically readable, you can skip this step.
 This sample pipeline was tested on OpenShift 4.10.
 
 You can see the versions of what I was running on OpenShift at [./demo-pre-reqs/operators/](./demo-pre-reqs/operators/). It is possible that this pipeline would need modifying to work with different versions of OpenShift, Tekton, or App Connect.
+
+## Before you run pipelines
+
+### Replace the ${BLOCK_STORAGECLASS} variable and create `simple-pipelinerun.yaml` or `complex-pipelinerun.yaml`  
+
+```sh
+#### b. 
+
+```sh
+% envsubst < simple-pipelinerun.yaml.tmpl > simple-pipelinerun.yaml
+% envsubst < complex-pipelinerun.yaml.tmpl > complex-pipelinerun.yaml
+```
 
 ## More info
 
