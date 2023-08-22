@@ -46,6 +46,8 @@ Baking the BAR files into custom App Connect images prevents the need to run a d
 
 4. [jq](https://jqlang.github.io/jq/download/), if not installed
 
+5. [kafka]
+
 ### Fork or clone the repository
 
 1. You can first fork the repository to your Git organisation.
@@ -246,7 +248,7 @@ The aim of this application was to demonstrate an ACE application which needed a
 
 But it means that running this:
 ```sh
-echo '{"id": 1, "message": "quick test"}' | kafka-console-producer.sh \
+echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
     --bootstrap-server $BOOTSTRAP \
     --topic TODO.UPDATES \
     --producer-property "security.protocol=SASL_SSL" \
@@ -308,16 +310,13 @@ If your Git repository is publically readable, you can skip this step.
 
 ## Supported versions
 
-This sample pipeline was tested on OpenShift 4.10.
+This sample pipeline was tested on OpenShift 4.12.
 
 You can see the versions of what I was running on OpenShift at [./demo-pre-reqs/operators/](./demo-pre-reqs/operators/). It is possible that this pipeline would need modifying to work with different versions of OpenShift, Tekton, or App Connect.
 
 ## Before you run pipelines
 
-### Replace the ${BLOCK_STORAGECLASS} variable and create `simple-pipelinerun.yaml` or `complex-pipelinerun.yaml`  
-
-```sh
-#### b. 
+Replace the ${BLOCK_STORAGECLASS} variable and create `simple-pipelinerun.yaml` or `complex-pipelinerun.yaml` .
 
 ```sh
 % envsubst < simple-pipelinerun.yaml.tmpl > simple-pipelinerun.yaml
@@ -326,4 +325,4 @@ You can see the versions of what I was running on OpenShift at [./demo-pre-reqs/
 
 ## More info
 
-For help with using this or if you have any questions, please create an issue or <a href="https://github.com/dalelane">contact me</a>.
+For help with using this or if you have any questions, please create an issue or <a href="https://github.com/khongks">contact me</a>.

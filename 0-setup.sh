@@ -48,17 +48,6 @@ oc create secret docker-registry ibm-entitlement-key \
     --docker-server=cp.icr.io \
     --namespace=pipeline-ace --dry-run=client -o yaml | oc apply -f -
 
-print_bold "Set default storageclass to ${BLOCK_STORAGECLASS}"
-if [[ -z "$BLOCK_STORAGECLASS" ]]; then
-    echo "You must set an BLOCK_STORAGECLASS environment variable to install PostgreSQL" 1>&2
-    echo "Set it like this:" 1>&2
-    echo " oc get sc" 1>&2
-    echo " Chose a storage class that can provide RWO block storage." 1>&2
-    echo " export IBM_ENTITLEMENT_KEY=..." 1>&2
-    exit 1
-fi
-oc patch storageclass ocs-storagecluster-ceph-rbd -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-
 print_bold "creating service account to run the pipelines as"
 oc apply -n pipeline-ace -f ./tekton/permissions/serviceaccount.yaml
 

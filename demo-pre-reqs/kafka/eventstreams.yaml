@@ -53,4 +53,4 @@ spec:
       replicas: 1
       storage:
         type: ephemeral
-  version: 11.2.2
+  version: latest

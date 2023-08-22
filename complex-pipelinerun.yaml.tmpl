@@ -132,7 +132,7 @@ spec:
     - name: pipeline-shared-workspace
       volumeClaimTemplate:
         spec:
-          storageClassName: ${BLOCK_STORAGECLASS}
+          storageClassName: ${FILE_STORAGECLASS}
           accessModes:
             - ReadWriteOnce
           resources:

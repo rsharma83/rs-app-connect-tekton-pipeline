@@ -151,7 +151,7 @@ ace-dashboard-ui-ace-demo.apps.<clusterID>.<domainName>
 
 ##### ii. Go to private window of a browser (incognito mode) and login to ACE Dashboard UI
 
-![ACE Dashboard](./images/ace-dashboard-ui.png)
+![](./images/ace-dashboard-ui.png)
 
 ### 8. Setup the namespace where the sample ACE demo will run
 ```sh
@@ -201,7 +201,7 @@ event-backbone-ibm-es-ui-eventstreams.apps.<clusterID>.<domainName>
 
 ##### ii. Go to private window of a browser (incognito mode) and login to Event Stream UI
 
-![Event Stream UI](./images/eventstreams-ui.png)
+![](./images/eventstreams-ui.png)
 
 ### 2. Deploy PostgreSQL (not needed for Simple pipeline, only for Complex pipeline)
 
@@ -250,7 +250,6 @@ store=# select * from todos;
 (0 rows)
 ```
 
-
 ### 3. Submit an HTTP request to the simple ACE flow
 
 ```sh
@@ -265,7 +264,7 @@ PASSWORD=$(oc get secret -neventstreams appconnect-kafka-user -ojsonpath='{.data
 oc get secret -neventstreams event-backbone-cluster-ca-cert -ojsonpath='{.data.ca\.p12}' | base64 -d > ca.p12
 CA_PASSWORD=$(oc get secret -neventstreams event-backbone-cluster-ca-cert -ojsonpath='{.data.ca\.password}' | base64 -d)
 
-echo '{"id": 1, "message": "quick test"}' | kafka-console-producer.sh \
+echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
     --bootstrap-server $BOOTSTRAP \
     --topic TODO.UPDATES \
     --producer-property "security.protocol=SASL_SSL" \
