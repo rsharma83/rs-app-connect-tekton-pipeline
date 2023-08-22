@@ -46,16 +46,16 @@ Baking the BAR files into custom App Connect images prevents the need to run a d
 
 4. [jq](https://jqlang.github.io/jq/download/), if not installed
 
-5. [kafka]
+5. [Apache Kafka](https://kafka.apache.org/quickstart). You need this to do testing for the Complex message flow.
 
 ### Fork or clone the repository
 
 1. You can first fork the repository to your Git organisation.
 
-2. Then you clone the repository using the following command
+2. Then clone the repository using the following command
 
-```
-git clone https://github.com/<org>/app-connect-tekton-pipeline
+```sh
+% git clone https://github.com/<org>/app-connect-tekton-pipeline
 ```
 ### Obtain IBM entitlement key
 
@@ -82,14 +82,14 @@ We have prepared the scripts to install these components in the folder [`demo-pr
 
 To access the OpenShift cluster via oc cli, you need to login using token by running this command in Terminal.
 
-```
-open https://oauth-openshift.apps.<clusterID>.<domainName>/oauth/token/request
+```sh
+% open https://oauth-openshift.apps.<clusterID>.<domainName>/oauth/token/request
 ```
 
 After login, you will be presented a command which you need to run in the terminal
 
-```
-oc login --token=<token> --server=https://api.<clusterID>.<domainName>:6443
+```sh
+% oc login --token=<token> --server=https://api.<clusterID>.<domainName>:6443
 ```
 
 Once you have access to the cluster, you can install the prerequisites.
@@ -211,7 +211,7 @@ It provides an HTTP endpoint that returns a Hello World message.
 
 Running this:
 ```sh
-curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
+% curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
 ```
 
 returns this:
@@ -248,7 +248,7 @@ The aim of this application was to demonstrate an ACE application which needed a
 
 But it means that running this:
 ```sh
-echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
+% echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
     --bootstrap-server $BOOTSTRAP \
     --topic TODO.UPDATES \
     --producer-property "security.protocol=SASL_SSL" \
@@ -260,7 +260,7 @@ echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
 ```
 
 gets you this:
-```
+```sql
 store=# select * from todos;
  id | user_id |       title        |            encoded_title             | is_completed
 ----+---------+--------------------+--------------------------------------+--------------

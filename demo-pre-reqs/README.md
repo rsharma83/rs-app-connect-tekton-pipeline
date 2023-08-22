@@ -151,7 +151,7 @@ ace-dashboard-ui-ace-demo.apps.<clusterID>.<domainName>
 
 ##### ii. Go to private window of a browser (incognito mode) and login to ACE Dashboard UI
 
-![](./images/ace-dashboard-ui.png)
+![ACE dashboard UI](./images/ace-dashboard-ui.png)
 
 ### 8. Setup the namespace where the sample ACE demo will run
 ```sh
@@ -201,7 +201,7 @@ event-backbone-ibm-es-ui-eventstreams.apps.<clusterID>.<domainName>
 
 ##### ii. Go to private window of a browser (incognito mode) and login to Event Stream UI
 
-![](./images/eventstreams-ui.png)
+![EventStreams UI](./images/eventstreams-ui.png)
 
 ### 2. Deploy PostgreSQL (not needed for Simple pipeline, only for Complex pipeline)
 
@@ -213,7 +213,7 @@ Now using project "postgresql" on server "https://api.64e01bd0fa254600179b97b4.c
 #### b. Set RWO block storageclass as default storageclass
 
 ```sh
-oc patch storageclass ${BLOCK_STORAGECLASS} -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+% oc patch storageclass ${BLOCK_STORAGECLASS} -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 #### c. Install PostgresSQL
@@ -243,7 +243,8 @@ store-repo-host-0                  2/2     Running     0          6m28s
   -- psql -d store
 psql (15.3)
 Type "help" for help.
-
+```
+```sql
 store=# select * from todos;
  id | user_id | title | encoded_title | is_completed 
 ----+---------+-------+---------------+--------------
@@ -253,7 +254,7 @@ store=# select * from todos;
 ### 3. Submit an HTTP request to the simple ACE flow
 
 ```sh
-curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
+% curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
 ```
 
 ### 4. Produce a message to the Kafka topic that will trigger the complex ACE flow
@@ -264,7 +265,7 @@ PASSWORD=$(oc get secret -neventstreams appconnect-kafka-user -ojsonpath='{.data
 oc get secret -neventstreams event-backbone-cluster-ca-cert -ojsonpath='{.data.ca\.p12}' | base64 -d > ca.p12
 CA_PASSWORD=$(oc get secret -neventstreams event-backbone-cluster-ca-cert -ojsonpath='{.data.ca\.password}' | base64 -d)
 
-echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
+% echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
     --bootstrap-server $BOOTSTRAP \
     --topic TODO.UPDATES \
     --producer-property "security.protocol=SASL_SSL" \
@@ -278,7 +279,7 @@ echo '{"id": 1, "message": "quick test"}' | ./kafka-console-producer.sh \
 ### 5. Check that the ACE flow put something in PostgreSQL
 
 ```sh
-oc exec -it -n postgresql -c database \
+% oc exec -it -n postgresql -c database \
   $(oc get pods -n postgresql --selector='postgres-operator.crunchydata.com/cluster=store,postgres-operator.crunchydata.com/role=master' -o name) \
   -- psql -d store
 ```
