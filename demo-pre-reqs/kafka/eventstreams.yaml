@@ -9,6 +9,7 @@ spec:
   apicurioRegistry: {}
   license:
     accept: true
+    license: L-YBXJ-ADJNSM
     use: CloudPakForIntegrationNonProduction
   requestIbmServices:
     iam: true

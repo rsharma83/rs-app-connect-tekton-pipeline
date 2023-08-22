@@ -18,13 +18,11 @@ This sample is based on Cloud Pak for Integration 2023.2.1. The versions of each
 ## A. Base installation for Simple pipeline run
 
 ### 1. Export IBM entitlement key
-
 ```sh
 % export IBM_ENTITLEMENT_KEY=<ibm-entitlment-key-you-copied>
 ```
 
 ### 2. Setup storage classes
-
 ```sh
 % oc get sc
 NAME                          PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
@@ -39,14 +37,12 @@ openshift-storage.noobaa.io   openshift-storage.noobaa.io/obc         Delete    
 ```
 
 ### 2. Add IBM software to Operator Hub
-
 ```sh
 % oc apply -f ibm-catalog-source.yaml
 catalogsource.operators.coreos.com/ibm-operator-catalog created
 ```
 
 ### 3. Install operators needed for the demo
-
 ```sh
 % oc apply -f operators
 subscription.operators.coreos.com/ibm-appconnect created
@@ -68,7 +64,6 @@ secret/ibm-entitlement-key created
 ```
 
 #### b. Replace the ${FILE_STORAGECLASS} variable and create `./cp4i/platform-navigator.yaml`
-
 ```sh
 % envsubst < cp4i/platform-navigator.yaml.tmpl > cp4i/platform-navigator.yaml
 ```
@@ -80,15 +75,13 @@ platformnavigator.integration.ibm.com/navigator created
 ```
 
 #### d. Wait for Platform UI to be ready. This takes 30-45 mins because it also installs Cloud Pak for Integration (foundational services).
-
 ```sh
 % oc get platformnavigator navigator -n integration
 NAME        REPLICAS   VERSION   STATUS    READY   LASTUPDATE   AGE     MESSAGE
 navigator   1                    Pending           2m16s        4m15s   Waiting for Zen to install. This can take up to 30 minutes, please wait. The ZenService object in the [integration] namespace is being fulfilled. The ZenService status is [Running reconciliation].
 ```
 
-#### e. When installation is completed, you should see the following
-
+#### e. When installation is completed, you should see the following:
 ```sh
 % oc get platformnavigator navigator -n integration 
 NAME        REPLICAS   VERSION      STATUS   READY   LASTUPDATE   AGE   MESSAGE
@@ -97,22 +90,19 @@ navigator   1          2023.2.1-1   Ready    True    51m          85m   Platform
 
 #### f. Access Platform UI
 
-##### i. Get the hostname
-
+##### i. Get URL
 ```sh
 % oc get route -n integration navigator-pn -ojson | jq -r .spec.host
 navigator-pn-integration.apps.<clusterID>.<domainName>
 ```
 
 ##### ii. Get credentials
-
 ```sh
 % oc get secret -n ibm-common-services platform-auth-idp-credentials -ojson | jq -r .data.admin_password | base64 -d
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ##### iii. Go to private window of a browser (incognito mode) and login to Platform UI
-
 ![Platform UI](./images/platform-ui.png)
 
 ### 7. Deploy ACE Dashboard UI
@@ -127,7 +117,6 @@ secret/ibm-entitlement-key created
 ```
 
 #### b. Replace the ${FILE_STORAGECLASS} variable and create `./appconnect/dashboard.yaml`
-
 ```sh
 % envsubst < appconnect/dashboard.yaml.tmpl > appconnect/dashboard.yaml
 ```
@@ -146,7 +135,6 @@ ace-dashboard   12.0.9.0-r1       1          false          Pending         67s
 ```
 
 #### e. When installation is completed, you should see the following
-
 ```sh
 % oc get dashboard ace-dashboard -n ace-demo 
 NAME            RESOLVEDVERSION   REPLICAS   CUSTOMIMAGES   STATUS   URL                                                                                                                                 AGE
@@ -155,17 +143,17 @@ ace-dashboard   12.0.9.0-r1       1          false          Ready    https://cpd
 
 #### f. Access ACE Dashboard UI
 
-##### i. Get the hostname
-
+##### i. Get URL
 ```sh
 % oc get route -n ace-demo ace-dashboard-ui -ojson | jq -r .spec.host
-ace-dashboard-ui-ace-demo.apps.<clusterID>.<domainName>.
+ace-dashboard-ui-ace-demo.apps.<clusterID>.<domainName>
 ```
 
-![ACE Dashboard](./images/ace-dashboard.png)
+##### ii. Go to private window of a browser (incognito mode) and login to ACE Dashboard UI
+
+![ACE Dashboard](./images/ace-dashboard-ui.png)
 
 ### 8. Setup the namespace where the sample ACE demo will run
-
 ```sh
 % oc new-project ace-demo
 Now using project "ace-demo" on server "https://api.64e01bd0fa254600179b97b4.cloud.techzone.ibm.com:6443".
@@ -178,26 +166,90 @@ secret/ibm-entitlement-key created
 
 ### 1. Deploy Event Streams
 
+#### a. Create `eventstreams` project and setup ibm entitlement key
 ```sh
 % oc new-project eventstreams
 Now using project "eventstreams" on server "https://api.64e01bd0fa254600179b97b4.cloud.techzone.ibm.com:6443".
 
 % oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=${IBM_ENTITLEMENT_KEY} --docker-server=cp.icr.io -n eventstreams
 secret/ibm-entitlement-key created
-
-% oc apply -f ./kafka
-eventstreams.integration.ibm.com/event-backbone created
 ```
+
+#### b. Install Event Streams
+```sh
+% oc apply -f ./kafka
+kafkauser.eventstreams.ibm.com/appconnect-kafka-user created
+eventstreams.eventstreams.ibm.com/event-backbone created
+secret/kafka-connection-info created
+kafkatopic.eventstreams.ibm.com/todo.updates created
+```
+
+#### b. Check installation status for EventStreams
+```sh
+% oc get eventstreams event-backbone -n eventstreams
+NAME             STATUS
+event-backbone   Ready
+```
+
+#### c. Access Event Stream UI
+
+##### i. Get URL
+```sh
+% oc get route -n eventstreams event-backbone-ibm-es-ui -ojson | jq -r .spec.host
+event-backbone-ibm-es-ui-eventstreams.apps.<clusterID>.<domainName>
+```
+
+##### ii. Go to private window of a browser (incognito mode) and login to Event Stream UI
+
+![Event Stream UI](./images/eventstreams-ui.png)
 
 ### 2. Deploy PostgreSQL (not needed for Simple pipeline, only for Complex pipeline)
 
+#### a. Create `eventstreams` project and setup ibm entitlement key
 ```sh
-oc new-project postgresql
+% oc new-project postgresql
 Now using project "postgresql" on server "https://api.64e01bd0fa254600179b97b4.cloud.techzone.ibm.com:6443".
-
-oc apply -f ./postgresql/db-data.yaml
-oc apply -f ./postgresql/database.yaml
 ```
+#### b. Set RWO block storageclass as default storageclass
+
+```sh
+oc patch storageclass ${BLOCK_STORAGECLASS} -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+#### c. Install PostgresSQL
+```sh
+% oc apply -f ./postgresql/db-data.yaml
+configmap/pg-initial-data-cm created
+
+% oc apply -f ./postgresql/database.yaml
+postgrescluster.postgres-operator.crunchydata.com/store created
+```
+
+#### d. Check installation status for PostgresSQL, make sure all the pods are Running (or Completed)
+
+```sh
+% oc get po -n postgresql
+NAME                               READY   STATUS      RESTARTS   AGE
+store-00-pknl-0                    4/4     Running     0          6m28s
+store-backup-t9bc-d2w25            0/1     Completed   0          5m40s
+store-pgbouncer-7487d969cf-6mqgd   2/2     Running     0          6m27s
+store-repo-host-0                  2/2     Running     0          6m28s
+```
+#### e. Access the database
+
+```sh
+% oc exec -it -n postgresql -c database \
+  $(oc get pods -n postgresql --selector='postgres-operator.crunchydata.com/cluster=store,postgres-operator.crunchydata.com/role=master' -o name) \
+  -- psql -d store
+psql (15.3)
+Type "help" for help.
+
+store=# select * from todos;
+ id | user_id | title | encoded_title | is_completed 
+----+---------+-------+---------------+--------------
+(0 rows)
+```
+
 
 ### 3. Submit an HTTP request to the simple ACE flow
 
