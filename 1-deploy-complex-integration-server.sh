@@ -10,8 +10,13 @@ if [[ $BASH_SOURCE = */* ]]; then
 fi
 
 # Common setup
-source 0-setup.sh
+# source 0-setup.sh
 
+function print_bold {
+    echo -e "\033[1m> ---------------------------------------------------------------\033[0m"
+    echo -e "\033[1m> $1\033[0m"
+    echo -e "\033[1m> ---------------------------------------------------------------\033[0m"
+}
 
 print_bold "running the pipeline"
 PIPELINE_RUN_K8S_NAME=$(oc create -n pipeline-ace -f ./complex-pipelinerun.yaml -o name)

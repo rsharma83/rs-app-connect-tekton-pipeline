@@ -42,13 +42,13 @@ spec:
       value: "simple-demo_Test"
 
     - name: app-connect-enterprise-version
-      value: "12.0.9.0-r1"
+      value: "${ACE_VERSION}"
     
     - name: app-connect-enterprise-license
-      value: "L-LFMR-BTD75V"
+      value: "${ACE_LICENSE}"
 
     - name: app-connect-enterprise-base-image
-      value: cp.icr.io/cp/appc/ace-server-prod@sha256:246828d9f89c4ed3a6719cd3e4b71b1dec382f848c9bf9c28156f78fa05bc4e7
+      value: "${ACE_IMAGE_URL}"
 
   pipelineRef:
     name: pipeline-ace-integration-server
