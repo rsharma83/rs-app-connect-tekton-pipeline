@@ -278,4 +278,3 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
     % curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
     {"hello":"world"}% 
     ```
-
