@@ -35,6 +35,35 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
         ```
     1. Go to the folder `app-connect-tekton-pipeline`. (important)
 
+1. Get your Git Personal Access Token (PAT)
+    1. Login to your Git.
+    1. Click on the Account icon (top-right) and from the drop down, click on `Settings`.
+    1. Then, click on `Developer settings` from the navigator pane (scroll to the bottom).
+    1. Click on `Personal access tokens > Fine-grained` tokens.
+    1. Click on the `Generate new token` button.
+    1. Give an meaningful `Name` for your token, adjust the `Expiration` to 90 days, ensure to select `Public Respositories` and click `Generate token` button (at the bottom).
+    1. Copy/save the value of the token.
+    1. Generate the `github-credentials.yaml` file
+        ```sh
+        $ export GIT_USER=<YOUR_GIT_USER_NAME>
+        % export GIT_TOKEN=<YOUR_GIT_PERSONAL_ACCESS_TOKEN>
+
+        % envsubst < github-credentials.yaml.tmpl > github-credentials.yaml
+        ```
+    1. You should have generated a `github-credentials.yaml` with the content here
+        ```yaml
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: github-credentials
+          annotations:
+            tekton.dev/git-0: https://github.com
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: <YOUR_GIT_USER_NAME>
+          password: <YOUR_GIT_PERSONAL_ACCESS_TOKEN>
+        ```
+
 1. Setup IBM entitlement key
     1. Obtain IBM entitlement key
         1. Go to the [Container software library](https://myibm.ibm.com/products-services/containerlibrary).
