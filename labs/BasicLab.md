@@ -188,7 +188,7 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 1. When installation is completed, you should see the following.
     ```sh
     % oc get dashboard ace-dashboard -n ace-demo 
-    NAME            RESOLVEDVERSION   REPLICAS   CUSTOMIMAGES   STATUS   URL                                                                                                                                 AGE
+    NAME            RESOLVEDVERSION   REPLICAS   CUSTOMIMAGES   STATUS   URL                                                                                                          AGE
     ace-dashboard   12.0.9.0-r1       1          false          Ready    https://cpd-integration.apps.<clusterID>.<domainName>/integration/run/integrations/ace-demo/ace-dashboard/   5m47s
     ```
 1. Access ACE Dashboard UI to verify installation.
