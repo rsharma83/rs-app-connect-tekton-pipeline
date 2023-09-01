@@ -31,7 +31,7 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
     1. Fork this repository to your Git organisation. Use your browser and go to this [link](https://github.com/khongks/app-connect-tekton-pipeline/fork).
     1. Clone the repository using the following command.
         ```sh
-        % git clone https://github.com/<org>/app-connect-tekton-pipeline
+        git clone https://github.com/<org>/app-connect-tekton-pipeline
         ```
     1. Go to the folder `app-connect-tekton-pipeline`. (important)
 
@@ -45,10 +45,9 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
     1. Copy/save the value of the token.
     1. Generate the `github-credentials.yaml` file
         ```sh
-        $ export GIT_USER=<YOUR_GIT_USER_NAME>
-        % export GIT_TOKEN=<YOUR_GIT_PERSONAL_ACCESS_TOKEN>
-
-        % envsubst < github-credentials.yaml.tmpl > github-credentials.yaml
+        export GIT_USER=<YOUR_GIT_USER_NAME>
+        export GIT_TOKEN=<YOUR_GIT_PERSONAL_ACCESS_TOKEN>
+        envsubst < github-credentials.yaml.tmpl > github-credentials.yaml
         ```
     1. You should have generated a `github-credentials.yaml` with the content here
         ```yaml
@@ -70,13 +69,16 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
         1. Copy the key - this will be used to create a pull secret later.
     1. From the Terminal, export the IBM entitlement key.
         ```sh
-        % export IBM_ENTITLEMENT_KEY=<ibm-entitlment-key-you-copied>
+        export IBM_ENTITLEMENT_KEY=<ibm-entitlment-key-you-copied>
         ```
 
 1. Setup storage classes
     1. Check what storageclasses are available. If there is none, you cannot proceed.
         ```sh
-        % oc get sc
+        oc get sc
+        ```
+        Results:
+        ```sh
         NAME                          PROVISIONER                             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
         localblock                    kubernetes.io/no-provisioner            Delete          WaitForFirstConsumer   false                  109m
         ocs-storagecluster-ceph-rbd   openshift-storage.rbd.csi.ceph.com      Delete          Immediate              true                   103m
@@ -86,20 +88,26 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
         ```
     1. From the terminal, export the storage classes.
         ```sh        
-        % export FILE_STORAGECLASS=ocs-storagecluster-cephfs
-        % export BLOCK_STORAGECLASS=ocs-storagecluster-ceph-rbd
+        export FILE_STORAGECLASS=ocs-storagecluster-cephfs
+        export BLOCK_STORAGECLASS=ocs-storagecluster-ceph-rbd
         ```
 ## Install Cloud Pak for Integration operators
 
 1. Go to the folder `demo-pre-reqs`.
 1. Add IBM software to Operator Hub.
     ```sh
-    % oc apply -f ibm-catalog-source.yaml
+    oc apply -f ibm-catalog-source.yaml
+    ```
+    Results:
+    ```sh
     catalogsource.operators.coreos.com/ibm-operator-catalog created
     ```
 1. Install operators needed for the demo.
     ```sh
-    % oc apply -f operators
+    oc apply -f operators
+    ```
+    Results:
+    ```sh
     subscription.operators.coreos.com/ibm-appconnect created
     subscription.operators.coreos.com/ibm-eventstreams created
     subscription.operators.coreos.com/ibm-integration-platform-navigator created
@@ -110,48 +118,67 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 ## Deploy Platform UI
 
 1. Go to the folder `demo-pre-reqs`, if you have not done so.
-1. Create `integration` project and setup entitlement key.
+1. Create `integration` project.
     ```sh
-    % oc new-project integration
+    oc new-project integration
+    ```
+    Results:
+    ```sh
     Now using project "integration" on server "https://<clusterID>.<domainName>:6443".
-
-    % oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=${IBM_ENTITLEMENT_KEY} --docker-server=cp.icr.io -n integration
+    ```
+1. Setup entitlement key.
+    ```sh
+    oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=${IBM_ENTITLEMENT_KEY} --docker-server=cp.icr.io -n integration
+    ```
+    Results:
+    ```sh
     secret/ibm-entitlement-key created
     ```
 1. Setup environment variables.
     ```sh
-    % export FILE_STORAGECLASS=ocs-storagecluster-cephfs
-    % export CP4I_LICENSE=L-YBXJ-ADJNSM
-    % export CP4I_VERSION=2023.2.1
-    % envsubst < cp4i/platform-navigator.yaml.tmpl > cp4i/platform-navigator.yaml
+    export FILE_STORAGECLASS=ocs-storagecluster-cephfs
+    export CP4I_LICENSE=L-YBXJ-ADJNSM
+    export CP4I_VERSION=2023.2.1
+    envsubst < cp4i/platform-navigator.yaml.tmpl > cp4i/platform-navigator.yaml
     ```
 1. Install Platform UI.
     ```sh
-    % oc apply -f ./cp4i
+    oc apply -f ./cp4i
+    ```
+    Results:
+    ```sh
     platformnavigator.integration.ibm.com/navigator created
     ```
 1. Wait for Platform UI to be ready. This takes 30-45 mins because it also installs Cloud Pak for Integration (foundational services).
     ```sh
-    % oc get platformnavigator navigator -n integration
+    oc get platformnavigator navigator -n integration
+    ```
+    Results:
+    ```sh
     NAME        REPLICAS   VERSION   STATUS    READY   LASTUPDATE   AGE     MESSAGE
     navigator   1                    Pending           2m16s        4m15s   Waiting for Zen to install. This can take up to 30 minutes, please wait. The ZenService object in the [integration] namespace is being fulfilled. The ZenService status is [Running reconciliation].
     ```
 1. When installation is completed, you should see the following.
     ```sh
-    % oc get platformnavigator navigator -n integration 
+    oc get platformnavigator navigator -n integration
+    ```
+    Results:
+    ```sh
     NAME        REPLICAS   VERSION      STATUS   READY   LASTUPDATE   AGE   MESSAGE
     navigator   1          2023.2.1-1   Ready    True    51m          85m   Platform UI has been provisioned.
     ```
 1. Access Platform UI to verify installation
     1. Get URL.
         ```sh
-        % oc get route -n integration navigator-pn -ojson | jq -r .spec.host
+        oc get route -n integration navigator-pn -ojson | jq -r .spec.host
+        ```
+        Results:
+        ```sh
         navigator-pn-integration.apps.<clusterID>.<domainName>
         ```
     1. Get credentials.
         ```sh
-        % oc get secret -n ibm-common-services platform-auth-idp-credentials -ojson | jq -r .data.admin_password | base64 -d
-        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        oc get secret -n ibm-common-services platform-auth-idp-credentials -ojson | jq -r .data.admin_password | base64 -d
         ```
     1. Go to private window of a browser (incognito mode) and login to Platform UI.
         ![Platform UI](../demo-pre-reqs/images/platform-ui.png)
@@ -159,48 +186,67 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 ## Deploy ACE Dashboard UI
 
 1. Go to the folder `demo-pre-reqs`, if you have not done so.
-1. Create `ace-demo` project and setup entitlement key.
+1. Create `ace-demo` project.
     ```sh
-    % oc new-project ace-demo
+    oc new-project ace-demo
+    ```
+    Results:
+    ```sh
     Now using project "ace-demo" on server "https://api.<clusterID>.<domainName>:6443".
-
-    % oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=${IBM_ENTITLEMENT_KEY} --docker-server=cp.icr.io -n ace-demo
+    ```
+1. Setup entitlement key.
+    ```sh
+    oc create secret docker-registry ibm-entitlement-key --docker-username=cp --docker-password=${IBM_ENTITLEMENT_KEY} --docker-server=cp.icr.io -n ace-demo
+    ```
+    Results:
+    ```sh
     secret/ibm-entitlement-key created
     ```
 1. Setup environment variables.
     ```sh
-    % export FILE_STORAGECLASS=ocs-storagecluster-cephfs
-    % export ACE_LICENSE=L-LFMR-BTD75V
-    % export ACE_VERSION=12.0.9.0-r1
-    % envsubst < cp4i/platform-navigator.yaml.tmpl > cp4i/platform-navigator.yaml
+    export FILE_STORAGECLASS=ocs-storagecluster-cephfs
+    export ACE_LICENSE=L-LFMR-BTD75V
+    export ACE_VERSION=12.0.9.0-r1
+    envsubst < cp4i/platform-navigator.yaml.tmpl > cp4i/platform-navigator.yaml
     ```
 1. Install ACE Dashboard UI.
     ```sh
-    % oc apply -f ./appconnect
+    oc apply -f ./appconnect
+    ```
+    Results:
+    ```sh
     dashboard.appconnect.ibm.com/ace-dashboard created
     ```
 1. Wait for ACE Dashboard UI to be ready. This takes 5-7 mins.
     ```sh
-    % oc get dashboard ace-dashboard -n ace-demo
+    oc get dashboard ace-dashboard -n ace-demo
+    ```
+    Results: 
+    ```sh
     NAME            RESOLVEDVERSION   REPLICAS   CUSTOMIMAGES   STATUS    URL   AGE
     ace-dashboard   12.0.9.0-r1       1          false          Pending         67s
     ```
 1. When installation is completed, you should see the following.
     ```sh
-    % oc get dashboard ace-dashboard -n ace-demo 
+    oc get dashboard ace-dashboard -n ace-demo 
+    ```
+    Results:
+    ```sh
     NAME            RESOLVEDVERSION   REPLICAS   CUSTOMIMAGES   STATUS   URL                                                                                                          AGE
     ace-dashboard   12.0.9.0-r1       1          false          Ready    https://cpd-integration.apps.<clusterID>.<domainName>/integration/run/integrations/ace-demo/ace-dashboard/   5m47s
     ```
 1. Access ACE Dashboard UI to verify installation.
     1. Get URL.
         ```sh
-        % oc get route -n ace-demo ace-dashboard-ui -ojson | jq -r .spec.host
+        oc get route -n ace-demo ace-dashboard-ui -ojson | jq -r .spec.host
+        ```
+        Results:
+        ```sh
         ace-dashboard-ui-ace-demo.apps.<clusterID>.<domainName>
         ```
     1. Get credentials.
         ```sh
-        % oc get secret -n ibm-common-services platform-auth-idp-credentials -ojson | jq -r .data.admin_password | base64 -d
-        xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        oc get secret -n ibm-common-services platform-auth-idp-credentials -ojson | jq -r .data.admin_password | base64 -d
         ```
     1. Go to private window of a browser (incognito mode) and login to ACE Dashboard UI.
         ![ACE dashboard UI](../demo-pre-reqs/images/ace-dashboard-ui.png)
@@ -211,7 +257,10 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 1. Make sure you have setup environment variable IBM_ENTITLEMENT_KEY.
 1. Run the script `0-setup.sh`. This script with setup the namespace for the pipeline, setup the credentials for Git and IBM registry pull secrets, service account and permission, pipeline and its tasks.
     ```sh
-    % ./0-setup.sh 
+    ./0-setup.sh 
+    ```
+    Results:
+    ```sh
     > ---------------------------------------------------------------
     > checking for tekton CLI
     > ---------------------------------------------------------------
@@ -273,16 +322,19 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 1. Go to the folder `app-connect-tekton-pipeline`.
 1. Setup environment variables.
     ```sh
-    % export FILE_STORAGECLASS=ocs-storagecluster-cephfs
-    % export ACE_LICENSE=L-LFMR-BTD75V
-    % export ACE_VERSION=12.0.9.0-r1
-    % export ACE_IMAGE_URL=cp.icr.io/cp/appc/ace-server-prod@sha256:246828d9f89c4ed3a6719cd3e4b71b1dec382f848c9bf9c28156f78fa05bc4e7
-    % envsubst < simple-pipelinerun.yaml.tmpl > simple-pipelinerun.yaml
+    export FILE_STORAGECLASS=ocs-storagecluster-cephfs
+    export ACE_LICENSE=L-LFMR-BTD75V
+    export ACE_VERSION=12.0.9.0-r1
+    export ACE_IMAGE_URL=cp.icr.io/cp/appc/ace-server-prod@sha256:246828d9f89c4ed3a6719cd3e4b71b1dec382f848c9bf9c28156f78fa05bc4e7
+    envsubst < simple-pipelinerun.yaml.tmpl > simple-pipelinerun.yaml
     ```
     Refer to the documentation on the values needed [Licensing reference for App Connect](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=resources-licensing-reference-app-connect-operator) and [App Connect server image](https://www.ibm.com/docs/en/app-connect/containers_cd?topic=obtaining-app-connect-enterprise-server-image-from-cloud-container-registry).
 1. Run the pipeline.
     ```sh
-    % ./1-deploy-simple-integration-server.sh
+    ./1-deploy-simple-integration-server.sh
+    ```
+    Results:
+    ```sh
     > ---------------------------------------------------------------
     > running the pipeline
     > ---------------------------------------------------------------
@@ -304,6 +356,9 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
 
 1. Submit an HTTP request to the `simple-demo` flow
     ```sh
-    % curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
+    curl "http://$(oc get route -nace-demo hello-world-http -o jsonpath='{.spec.host}')/hello"
+    ```
+    Results:
+    ```sh
     {"hello":"world"}% 
     ```
