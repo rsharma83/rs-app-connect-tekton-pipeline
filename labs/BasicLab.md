@@ -21,7 +21,7 @@ The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of ea
     1. IBM App Connect v9.1
 
 1. Instances
-    1. Plaform Navigator instance v2023.2.1
+    1. Platform Navigator instance v2023.2.1
     1. App Connect Dashboard instance v12.0.9.0-r1
     1. App Connect Integration Server instance v12.0.9.0-r1 (deployed via Tekton pipeline)
 
