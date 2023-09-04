@@ -12,7 +12,7 @@
     1. [tkn cli](https://tekton.dev/docs/cli/)
     1. [jq](https://jqlang.github.io/jq/download/)
 
-## Required base capabilities/compeonents
+## Required base capabilities/components
 
 The Basic Lab is based on Cloud Pak for Integration 2023.2.1. The versions of each components used are:
 
